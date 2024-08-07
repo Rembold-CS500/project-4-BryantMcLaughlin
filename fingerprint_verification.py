@@ -5,40 +5,34 @@
 ######################################################################
 
 def read_print(filename):
-    """Reads the given print and returns a dictionary with all info."""
-    # Your turn!
+    with open(filename, 'r') as file:
+        lines = file.readlines()
 
+    # Extract the name, width, and height
+    name = lines[0].strip()
+    width = int(lines[1].strip())
+    height = int(lines[2].strip())
 
+    # Extract the fingerprint data
+    fingerprint = [line.rstrip() for line in lines[3:]]
 
+    # Verify the dimensions of the fingerprint
+    # for line in fingerprint:
+    #     if len(line) != width:
+    #         raise ValueError("Fingerprint dimensions do not match the specified width")
 
+    # Create the data dictionary
+    data = {
+        'name': name,
+        'width': width,
+        'height': height,
+        'fingerprint': fingerprint
+    }
 
-
-# You can add your various check functions below
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == '__main__':
-    # Just to get you started
-    data = read_print("./prints/User1_Original.txt")
     print(data)
+    return data
+    
 
-    # Add anything else you need for testing down here as you go!
+# Test the function with the provided file
+filename = 'prints/User1_Original.txt'
+read_print(filename)
