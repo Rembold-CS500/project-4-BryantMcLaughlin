@@ -29,10 +29,24 @@ def read_print(filename):
         'fingerprint': fingerprint
     }
 
-    print(data)
+    # print(data)
+        # Confirmed it is printing the contents in dictionary format
     return data
+
+def simple_check(fingerprint1, fingerprint2):
+    return fingerprint1['fingerprint'] == fingerprint2['fingerprint']
     
 
-# Test the function with the provided file
-filename = 'prints/User1_Original.txt'
-read_print(filename)
+# Test the function with the provided files
+filename1 = 'prints/User1_Original.txt'
+fingerprint1 = read_print(filename1)
+print(fingerprint1)
+
+# Test the function with the provided files
+filename2 = 'prints/User2_Original.txt'
+fingerprint2 = read_print(filename2)
+print(fingerprint2)
+
+print(simple_check(fingerprint1, fingerprint1))  # Should return True
+print(simple_check(fingerprint1, fingerprint2))  # Should return False
+    # Confirmed that this is functioning as intended
