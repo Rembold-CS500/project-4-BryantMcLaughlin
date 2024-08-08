@@ -15,7 +15,7 @@ def read_print(filename):
     height = int(lines[2].strip())
 
     # Extract the fingerprint data
-    fingerprint = [line.rstrip() for line in lines[3:]]
+    fingerprint = [line[:-1] for line in lines[3:]]
 
     # Verify the dimensions of the fingerprint
     # for line in fingerprint:
@@ -58,6 +58,33 @@ def variant_check(fingerprint1, fingerprint2, threshold=95.0):
 
     return match_percentage >= threshold
     
+def shifted_check(fingerprint1, fingerprint2, threshold=95.0):
+    max_shift = 5
+    max_percentage = 0
+    for x_shift in range(-max_shift, max_shift):
+        for y_shift in range(-max_shift, max_shift):
+            match_count = 0
+            total_pixels = 0
+
+            for i in range(fingerprint1['height']):
+                for j in range(fingerprint1['width']):
+                    shifted_i = i + y_shift
+                    shifted_j = j + x_shift
+
+                    # Ensure both original and shifted indices are within bounds
+                    if (0 <= shifted_i and shifted_i < len(fingerprint1['fingerprint'][i]) and 0 <= shifted_j and shifted_j < len(fingerprint1['fingerprint'][i]) and
+                    j < len(fingerprint1['fingerprint'][i]) and j < len(fingerprint2['fingerprint'][i])):
+                        if fingerprint1['fingerprint'][i][j] == fingerprint2['fingerprint'][shifted_i][shifted_j]:
+                            match_count += 1
+                        total_pixels += 1
+
+            if total_pixels > 0:
+                match_percentage = (match_count / total_pixels) * 100
+                max_percentage = max(max_percentage, match_percentage)
+
+    print(f"Max matching percentage: {max_percentage:.2f}%")
+
+    return max_percentage >= threshold
 
 # Test the read_print function with the provided files
 filename1 = 'prints/User1_Original.txt'
@@ -86,4 +113,8 @@ print(variant_check(fingerprint1, fingerprint3))  # Should return False if the m
 filename4 = 'prints/User1_Variant1.txt'
 fingerprint4 = read_print(filename4)
 print(variant_check(fingerprint1, fingerprint4))  # Should return True if the match percentage is above 95%
-# Not returning true
+# confirmed functioning properly
+
+# Test the shifted_check function
+print(shifted_check(fingerprint1, fingerprint1))  # Should return True with 100% match
+print(shifted_check(fingerprint1, fingerprint3))  # Should return True with over 95% match
